@@ -1,5 +1,6 @@
-module SLHA
 
-# package code goes here
+abstract SLHA
+abstract SLHABlock
 
-end # module
+type SLHASimpleBlock{Rank} <: SLHABlock
+  block::Array{Float64,Rank}
