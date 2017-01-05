@@ -7,9 +7,17 @@ type SLHASimpleBlock{Rank} <: SLHABlock
   block::Array{Float64,Rank}
 end
 
-type SLHAOptionsBlock <: SLHABlock
+type SLHADescBlock <: SLHABlock
   block::Dict{Int64, String}
 end
 
+type SLHAParameterBlock <: SLHABlock
+  scale::Float64
+  block::Dict{Int64, Float64}
+end
+
 type SLHASparseBlock <: SLHABlock
-  block::Sparse
+  scale::Float64
+  block::SparseMatrixCSC{Float64, Int64}
+end
+
