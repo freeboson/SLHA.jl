@@ -1,3 +1,6 @@
+module slha
+
+import Base.show
 
 abstract SLHA
 abstract SLHABlock
@@ -13,11 +16,15 @@ end
 
 type SLHAParameterBlock <: SLHABlock
   scale::Float64
-  block::Dict{Int64, Float64}
+  block::SparseVector{Float64,Int64}
 end
 
 type SLHASparseBlock <: SLHABlock
   scale::Float64
   block::SparseMatrixCSC{Float64, Int64}
+end
+
+function show(io::IO, m::MIME"text/plain", block::SLHABlock)
+  println(io,"BLOCK LOLOLOL Q=$(block.scale)\n")
 end
 
