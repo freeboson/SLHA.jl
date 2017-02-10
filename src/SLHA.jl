@@ -6,34 +6,36 @@ module SLHA
 
     abstract SLHABlock
 
-    type SLHASimpleBlock{Rank} <: SLHABlock
+    type SLHASimpleBlock{label::Symbol, Rank} <: SLHABlock
         scale::Float64
         block::Array{Float64,Rank}
     end
 
-    type SLHADescBlock <: SLHABlock
+    type SLHADescBlock{label::Symbol} <: SLHABlock
         block::Dict{Int64, String}
     end
 
-    type SLHAParameterBlock <: SLHABlock
+    type SLHAParameterBlock{label::Symbol} <: SLHABlock
         scale::Float64
         block::SparseVector{Float64,Int64}
     end
 
-    type SLHASparseBlock <: SLHABlock
+    type SLHASparseBlock{label::Symbol} <: SLHABlock
         scale::Float64
         block::SparseMatrixCSC{Float64, Int64}
     end
 
-    function show(io::IO, m::MIME"text/plain", block::SLHASimpleBlock{1})
-        @printf(io, "BLOCK SIMPLE Q=%+0.10e\n",block.scale)
+    function show{label::Symbol}(io::IO, m::MIME"text/plain",
+                                 block::SLHASimpleBlock{label, 1})
+        @printf(io, "BLOCK %s Q=%+0.10e\n", label, block.scale)
         for n = 1:length(block.block)
             @printf(io, "%6d    % 0.10e \n",n, block.block[n])
         end
     end
 
-    function show(io::IO, m::MIME"text/plain", block::SLHASimpleBlock{2})
-        @printf(io, "BLOCK SIMPLE Q=%+0.10e\n",block.scale)
+    function show{label::Symbol}(io::IO, m::MIME"text/plain",
+                                 block::SLHASimpleBlock{label, 2})
+        @printf(io, "BLOCK %s Q=%+0.10e\n", label, block.scale)
         for c = 1:size(block.block,2)
             for r = 1:size(block.block, 1)
                 @printf(io, "%3d %2d    % 0.10e \n",r, c, block.block[r,c])
@@ -41,8 +43,9 @@ module SLHA
         end
     end
 
-    function show(io::IO, m::MIME"text/plain", block::SLHASimpleBlock{3})
-        @printf(io, "BLOCK SIMPLE Q=%+0.10e\n",block.scale)
+    function show{label::Symbol}(io::IO, m::MIME"text/plain",
+                                 block::SLHASimpleBlock{label, 3})
+        @printf(io, "BLOCK %s Q=%+0.10e\n", label, block.scale)
         A = block.block
         @nloops 3 ind A begin
             @printf(io, "%3d %2d %2d % 0.10e \n", (@ntuple 3 ind)...,
@@ -51,11 +54,11 @@ module SLHA
     end
 
 # Why not... display arbitrary rank blocks. Only used for rank > 3
-    @generated function show{rank}(io::IO, m::MIME"text/plain",
-                                   block::SLHASimpleBlock{rank})
+    @generated function show{label::Symbol, rank}(io::IO, m::MIME"text/plain",
+                                   block::SLHASimpleBlock{label, rank})
         quote
             A = block.block
-            @printf(io, "BLOCK WHOAAA Q=%+0.10e\n",block.scale)
+            @printf(io, "BLOCK %s Q=%+0.10e\n",label, block.scale)
             @nloops $rank ind A begin
                 @printf(io, "%s % 0.10e \n", 
                         string(map((n) -> @sprintf(" %2d", n),
