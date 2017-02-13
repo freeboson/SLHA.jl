@@ -6,26 +6,27 @@ module SLHA
 
     abstract SLHABlock
 
-    type SLHASimpleBlock{label::Symbol, Rank} <: SLHABlock
+    type SLHASimpleBlock{label, dim} <: SLHABlock
         scale::Float64
-        block::Array{Float64,Rank}
+        block::Array{Float64,dim}
     end
+    SLHASimpleBlock(l::Symbol, q, x::Array) = SLHASimpleBlock{l, ndims(x)}(q, x)
 
-    type SLHADescBlock{label::Symbol} <: SLHABlock
+    type SLHADescBlock{label} <: SLHABlock
         block::Dict{Int64, String}
     end
 
-    type SLHAParameterBlock{label::Symbol} <: SLHABlock
+    type SLHAParameterBlock{label} <: SLHABlock
         scale::Float64
         block::SparseVector{Float64,Int64}
     end
 
-    type SLHASparseBlock{label::Symbol} <: SLHABlock
+    type SLHASparseBlock{label} <: SLHABlock
         scale::Float64
         block::SparseMatrixCSC{Float64, Int64}
     end
 
-    function show{label::Symbol}(io::IO, m::MIME"text/plain",
+    function show{label}(io::IO, m::MIME"text/plain",
                                  block::SLHASimpleBlock{label, 1})
         @printf(io, "BLOCK %s Q=%+0.10e\n", label, block.scale)
         for n = 1:length(block.block)
@@ -33,7 +34,7 @@ module SLHA
         end
     end
 
-    function show{label::Symbol}(io::IO, m::MIME"text/plain",
+    function show{label}(io::IO, m::MIME"text/plain",
                                  block::SLHASimpleBlock{label, 2})
         @printf(io, "BLOCK %s Q=%+0.10e\n", label, block.scale)
         for c = 1:size(block.block,2)
@@ -43,7 +44,7 @@ module SLHA
         end
     end
 
-    function show{label::Symbol}(io::IO, m::MIME"text/plain",
+    function show{label}(io::IO, m::MIME"text/plain",
                                  block::SLHASimpleBlock{label, 3})
         @printf(io, "BLOCK %s Q=%+0.10e\n", label, block.scale)
         A = block.block
@@ -53,17 +54,17 @@ module SLHA
         end
     end
 
-# Why not... display arbitrary rank blocks. Only used for rank > 3
-    @generated function show{label::Symbol, rank}(io::IO, m::MIME"text/plain",
-                                   block::SLHASimpleBlock{label, rank})
+# Why not... display arbitrary dim blocks. Only used for dim > 3
+    @generated function show{label, dim}(io::IO, m::MIME"text/plain",
+                                   block::SLHASimpleBlock{label, dim})
         quote
             A = block.block
             @printf(io, "BLOCK %s Q=%+0.10e\n",label, block.scale)
-            @nloops $rank ind A begin
-                @printf(io, "%s % 0.10e \n", 
+            @nloops $dim ind A begin
+                @printf(io, "%s % 0.10e \n",
                         string(map((n) -> @sprintf(" %2d", n),
-                                   (@ntuple $rank ind))...),
-                        (@nref $rank A ind))
+                                   (@ntuple $dim ind))...),
+                        (@nref $dim A ind))
             end
         end
     end
