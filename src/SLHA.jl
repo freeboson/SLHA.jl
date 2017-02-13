@@ -68,5 +68,17 @@ module SLHA
         end
     end
 
+    function show{label::Symbol}(io::IO, m::MIME"text/plain",
+                                 block::SLHADescBlock{label::Symbol})
+        println(io, "BLOCK $(label)")
+        for (index, param) in block.block
+            @printf("%6d    %s\n", index, param)
+        end
+    end
+
+    function show{label::Symbol}(io::IO, m::MIME"text/plain",
+                                 block::SLHAParameterBlock{label::Symbol})
+        @printf(io, "BLOCK %s Q=%+0.10e\n", label, block.scale)
+
 end
 
