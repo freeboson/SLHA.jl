@@ -32,6 +32,18 @@ module SLHA
         block::SparseMatrixCSC{Float64, Int64}
     end
 
+    typealias SpInfoBlock       SLHADescBlock{:SPINFO}
+    typealias ModSelBlock       SLHADescBlock(:MODSEL),
+    typealias SMInputsBlock     SLHANoScaleParameterBlock{:SMINPUTS}
+    typealias MinParBlock       SLHANoScaleParameterBlock{:MINPAR}
+    typealias ExtParBlock       SLHANoScaleParameterBlock{:EXTPAR}
+    typealias MassBlock         SLHANoScaleParameterBlock{:MASS}
+    typealias NMixBlock         SLHASimpleBlock{:NMIX, 2}
+    typealias UMixBlock         SLHASimpleBlock{:NMIX, 2}
+    typealias StopMixBlock      SLHASimpleBlock{:NMIX, 2}
+    typealias SbotMixBlock      SLHASimpleBlock{:NMIX, 2}
+    typealias StauMixBlock      SLHASimpleBlock{:NMIX, 2}
+
     function show{label}(io::IO, m::MIME"text/plain",
                                  block::SLHASimpleBlock{label, 1})
         @printf(io, "BLOCK %s Q= %+0.10e\n", label, block.scale)
