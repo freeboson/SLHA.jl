@@ -2,8 +2,10 @@ module SLHA
     import Base.show
     using Base.Cartesian
 
-    export SLHASimpleBlock, SLHADescBlock, SLHAParameterBlock, SLHASparseBlock
+    export SLHASimpleBlock, SLHADescBlock, SLHAParameterBlock,
+        SLHANoScaleParameterBlock, SLHASparseBlock
 
+    abstract SLHAData
     abstract SLHABlock
 
     type SLHASimpleBlock{label, dim} <: SLHABlock
@@ -16,9 +18,13 @@ module SLHA
         block::Dict{Int64, String}
     end
 
+    type SLHANoScaleParameterBlock{label} <: SLHABlock
+        block::Dict{Int64, Float64}
+    end
+
     type SLHAParameterBlock{label} <: SLHABlock
         scale::Float64
-        block::SparseVector{Float64,Int64}
+        block::Dict{Int64, Float64}
     end
 
     type SLHASparseBlock{label} <: SLHABlock
@@ -37,8 +43,9 @@ module SLHA
     function show{label}(io::IO, m::MIME"text/plain",
                                  block::SLHASimpleBlock{label, 2})
         @printf(io, "BLOCK %s Q= %+0.10e\n", label, block.scale)
-        for c = 1:size(block.block,2)
-            for r = 1:size(block.block, 1)
+        (nr,nc) = size(block.block)
+        for c = 1:nc
+            for r = 1:nr
                 @printf(io, "%3d %2d    % 0.10e \n",r, c, block.block[r,c])
             end
         end
@@ -73,13 +80,39 @@ module SLHA
                                  block::SLHADescBlock{label::Symbol})
         println(io, "BLOCK $(label)")
         for (index, param) in block.block
-            @printf("%6d    %s\n", index, param)
+            @printf(io, "%6d    %s\n", index, param)
         end
     end
 
-#    function show{label::Symbol}(io::IO, m::MIME"text/plain",
-#                                 block::SLHAParameterBlock{label::Symbol})
-#        @printf(io, "BLOCK %s Q=%+0.10e\n", label, block.scale)
+    function show{label}(io::IO, m::MIME"text/plain",
+                                 block::SLHAParameterBlock{label::Symbol})
+        @printf(io, "BLOCK %s Q=%+0.10e\n",label, block.scale)
+        for (index, param) in block.block
+            @printf(io, "%6d    %s\n", index, param)
+        end
+    end
+
+    function show{label}(io::IO, m::MIME"text/plain",
+                             block::SLHANoScaleParameterBlock{label::Symbol})
+        println(io, "BLOCK $(label)")
+        for (index, param) in block.block
+            @printf(io, "%6d    %s\n", index, param)
+        end
+    end
+
+    function show{label}(io::IO, m::MIME"text/plain",
+                                 block::SLHASparseBlock{label::Symbol})
+        @printf(io, "BLOCK %s Q=%+0.10e\n",label, block.scale)
+        rows = rowvals(block.block)
+        vals = nonzeros(block.block)
+        for col = 1:size(block.block, 2)
+            for sparseind in nzrange(block.block, c)
+                row = rows[sparseind]
+                val = vals[sparseind]
+                @printf(io, "%3d %2d    % 0.10e \n", row, col, val)
+            end
+        end
+    end
 
 end
 
