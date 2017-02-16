@@ -33,16 +33,16 @@ module SLHA
     end
 
     typealias SpInfoBlock       SLHADescBlock{:SPINFO}
-    typealias ModSelBlock       SLHADescBlock(:MODSEL),
+    typealias ModSelBlock       SLHADescBlock(:MODSEL)
     typealias SMInputsBlock     SLHANoScaleParameterBlock{:SMINPUTS}
     typealias MinParBlock       SLHANoScaleParameterBlock{:MINPAR}
     typealias ExtParBlock       SLHANoScaleParameterBlock{:EXTPAR}
     typealias MassBlock         SLHANoScaleParameterBlock{:MASS}
     typealias NMixBlock         SLHASimpleBlock{:NMIX, 2}
-    typealias UMixBlock         SLHASimpleBlock{:NMIX, 2}
-    typealias StopMixBlock      SLHASimpleBlock{:NMIX, 2}
-    typealias SbotMixBlock      SLHASimpleBlock{:NMIX, 2}
-    typealias StauMixBlock      SLHASimpleBlock{:NMIX, 2}
+    typealias UMixBlock         SLHASimpleBlock{:UMIX, 2}
+    typealias StopMixBlock      SLHASimpleBlock{:STOPMIX, 2}
+    typealias SbotMixBlock      SLHASimpleBlock{:SBOTMIX, 2}
+    typealias StauMixBlock      SLHASimpleBlock{:STAUMIX, 2}
 
     function show{label}(io::IO, m::MIME"text/plain",
                                  block::SLHASimpleBlock{label, 1})
