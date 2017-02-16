@@ -47,11 +47,21 @@ module SLHA
     typealias MinParBlock       SLHANoScaleParameterBlock{:MINPAR}
     typealias ExtParBlock       SLHANoScaleParameterBlock{:EXTPAR}
     typealias MassBlock         SLHANoScaleParameterBlock{:MASS}
+    typealias MSoftBlock        SLHAParameterBlock{:MSOFT}
     typealias NMixBlock         SLHASimpleBlock{:NMIX, 2}
     typealias UMixBlock         SLHASimpleBlock{:UMIX, 2}
     typealias StopMixBlock      SLHASimpleBlock{:STOPMIX, 2}
     typealias SbotMixBlock      SLHASimpleBlock{:SBOTMIX, 2}
     typealias StauMixBlock      SLHASimpleBlock{:STAUMIX, 2}
+    typealias AlphaBlock        SLHASingletonBlock{:ALPHA}
+    typealias HMixBlock         SLHAParameterBlock{:HMIX}
+    typealias GaugeBlock        SLHAParameterBlock{:GAUGE}
+    typealias AUBlock           SLHASparseBlock{:AU}
+    typealias ADBlock           SLHASparseBlock{:AD}
+    typealias AEBlock           SLHASparseBlock{:AE}
+    typealias YUBlock           SLHASparseBlock{:YU}
+    typealias YDBlock           SLHASparseBlock{:YD}
+    typealias YEBlock           SLHASparseBlock{:YE}
 
     function show{label}(io::IO, m::MIME"text/plain",
                                  block::SLHASimpleBlock{label, 1})
