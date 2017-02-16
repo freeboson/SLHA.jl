@@ -28,7 +28,7 @@ module SLHA
 
     function show{label}(io::IO, m::MIME"text/plain",
                                  block::SLHASimpleBlock{label, 1})
-        @printf(io, "BLOCK %s Q=%+0.10e\n", label, block.scale)
+        @printf(io, "BLOCK %s Q= %+0.10e\n", label, block.scale)
         for n = 1:length(block.block)
             @printf(io, "%6d    % 0.10e \n",n, block.block[n])
         end
@@ -36,7 +36,7 @@ module SLHA
 
     function show{label}(io::IO, m::MIME"text/plain",
                                  block::SLHASimpleBlock{label, 2})
-        @printf(io, "BLOCK %s Q=%+0.10e\n", label, block.scale)
+        @printf(io, "BLOCK %s Q= %+0.10e\n", label, block.scale)
         for c = 1:size(block.block,2)
             for r = 1:size(block.block, 1)
                 @printf(io, "%3d %2d    % 0.10e \n",r, c, block.block[r,c])
@@ -46,7 +46,7 @@ module SLHA
 
     function show{label}(io::IO, m::MIME"text/plain",
                                  block::SLHASimpleBlock{label, 3})
-        @printf(io, "BLOCK %s Q=%+0.10e\n", label, block.scale)
+        @printf(io, "BLOCK %s Q= %+0.10e\n", label, block.scale)
         A = block.block
         @nloops 3 ind A begin
             @printf(io, "%3d %2d %2d % 0.10e \n", (@ntuple 3 ind)...,
