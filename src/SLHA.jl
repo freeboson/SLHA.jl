@@ -32,6 +32,11 @@ module SLHA
         block::SparseMatrixCSC{Float64, Int64}
     end
 
+    # I really hate that this exists
+    type SLHASingletonBlock{label} <: SLHABlock
+        entry::Float64
+    end
+
     typealias SpInfoBlock       SLHADescBlock{:SPINFO}
     typealias ModSelBlock       SLHADescBlock(:MODSEL)
     typealias SMInputsBlock     SLHANoScaleParameterBlock{:SMINPUTS}
@@ -124,6 +129,12 @@ module SLHA
                 @printf(io, "%3d %2d    % 0.10e \n", row, col, val)
             end
         end
+    end
+
+    function show{label}(io::IO, m::MIME"text/plain",
+                             block::SLHASingletonBlock{label::Symbol})
+        println(io, "BLOCK $(label)")
+        @printf(io, "          % 0.10e \n", block.entry)
     end
 
 end
