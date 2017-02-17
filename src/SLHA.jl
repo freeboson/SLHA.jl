@@ -11,8 +11,9 @@ module SLHA
 
     abstract SLHAData
     abstract SLHABlock
+    abstract SLHANumericalBlock <: SLHABlock
 
-    type SLHASimpleBlock{label, dim} <: SLHABlock
+    type SLHASimpleBlock{label, dim} <: SLHANumericalBlock
         scale::Float64
         block::Array{Float64,dim}
     end
@@ -31,7 +32,7 @@ module SLHA
         block::Dict{Int64, Float64}
     end
 
-    type SLHASparseBlock{label} <: SLHABlock
+    type SLHASparseBlock{label} <: SLHANumericalBlock
         scale::Float64
         block::SparseMatrixCSC{Float64, Int64}
     end
