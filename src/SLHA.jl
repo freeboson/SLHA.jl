@@ -2,12 +2,34 @@ module SLHA
     import Base.show
     using Base.Cartesian
 
-    export  SLHASimpleBlock,
+    export  SLHABlock,
+            SLHASimpleBlock,
             SLHADescBlock,
             SLHAParameterBlock,
             SLHANoScaleParameterBlock,
             SLHASparseBlock,
-            SLHASingletonBlock
+            SLHASingletonBlock,
+            SLHASpInfoBlock,
+            SLHAModSelBlock,
+            SLHASMInputsBlock,
+            SLHAMinParBlock,
+            SLHAExtParBlock,
+            SLHAMassBlock,
+            SLHAMSoftBlock,
+            SLHANMixBlock,
+            SLHAUMixBlock,
+            SLHAStopMixBlock,
+            SLHASbotMixBlock,
+            SLHAStauMixBlock,
+            SLHAAlphaBlock,
+            SLHAHMixBlock,
+            SLHAGaugeBlock,
+            SLHAAUBlock,
+            SLHAADBlock,
+            SLHAAEBlock,
+            SLHAYUBlock,
+            SLHAYDBlock,
+            SLHAYEBlock
 
     abstract SLHAData
     abstract SLHABlock
@@ -42,53 +64,58 @@ module SLHA
         entry::Float64
     end
 
-    typealias SpInfoBlock       SLHADescBlock{:SPINFO}
-    typealias ModSelBlock       SLHADescBlock{:MODSEL}
-    typealias SMInputsBlock     SLHANoScaleParameterBlock{:SMINPUTS}
-    typealias MinParBlock       SLHANoScaleParameterBlock{:MINPAR}
-    typealias ExtParBlock       SLHANoScaleParameterBlock{:EXTPAR}
-    typealias MassBlock         SLHANoScaleParameterBlock{:MASS}
-    typealias MSoftBlock        SLHAParameterBlock{:MSOFT}
-    typealias NMixBlock         SLHASimpleBlock{:NMIX, 2}
-    typealias UMixBlock         SLHASimpleBlock{:UMIX, 2}
-    typealias StopMixBlock      SLHASimpleBlock{:STOPMIX, 2}
-    typealias SbotMixBlock      SLHASimpleBlock{:SBOTMIX, 2}
-    typealias StauMixBlock      SLHASimpleBlock{:STAUMIX, 2}
-    typealias AlphaBlock        SLHASingletonBlock{:ALPHA}
-    typealias HMixBlock         SLHAParameterBlock{:HMIX}
-    typealias GaugeBlock        SLHAParameterBlock{:GAUGE}
-    typealias AUBlock           SLHASparseBlock{:AU}
-    typealias ADBlock           SLHASparseBlock{:AD}
-    typealias AEBlock           SLHASparseBlock{:AE}
-    typealias YUBlock           SLHASparseBlock{:YU}
-    typealias YDBlock           SLHASparseBlock{:YD}
-    typealias YEBlock           SLHASparseBlock{:YE}
+    type SLHAArbitraryBlock{label} <: SLHABlock
+        scale::Nullable{Float64}
+        block::Dict{Array{Int64,1},String}
+    end
+
+    typealias SLHASpInfoBlock       SLHADescBlock{:SPINFO}
+    typealias SLHAModSelBlock       SLHADescBlock{:MODSEL}
+    typealias SLHASMInputsBlock     SLHANoScaleParameterBlock{:SMINPUTS}
+    typealias SLHAMinParBlock       SLHANoScaleParameterBlock{:MINPAR}
+    typealias SLHAExtParBlock       SLHANoScaleParameterBlock{:EXTPAR}
+    typealias SLHAMassBlock         SLHANoScaleParameterBlock{:MASS}
+    typealias SLHAMSoftBlock        SLHAParameterBlock{:MSOFT}
+    typealias SLHANMixBlock         SLHASimpleBlock{:NMIX, 2}
+    typealias SLHAUMixBlock         SLHASimpleBlock{:UMIX, 2}
+    typealias SLHAStopMixBlock      SLHASimpleBlock{:STOPMIX, 2}
+    typealias SLHASbotMixBlock      SLHASimpleBlock{:SBOTMIX, 2}
+    typealias SLHAStauMixBlock      SLHASimpleBlock{:STAUMIX, 2}
+    typealias SLHAAlphaBlock        SLHASingletonBlock{:ALPHA}
+    typealias SLHAHMixBlock         SLHAParameterBlock{:HMIX}
+    typealias SLHAGaugeBlock        SLHAParameterBlock{:GAUGE}
+    typealias SLHAAUBlock           SLHASparseBlock{:AU}
+    typealias SLHAADBlock           SLHASparseBlock{:AD}
+    typealias SLHAAEBlock           SLHASparseBlock{:AE}
+    typealias SLHAYUBlock           SLHASparseBlock{:YU}
+    typealias SLHAYDBlock           SLHASparseBlock{:YD}
+    typealias SLHAYEBlock           SLHASparseBlock{:YE}
 
     function show{label}(io::IO, m::MIME"text/plain",
                                  block::SLHASimpleBlock{label, 1})
-        @printf(io, "BLOCK %s Q= %+0.10E \n", label, block.scale)
+        @printf(io, "BLOCK %s Q= %+0.15E \n", label, block.scale)
         for n = 1:length(block.block)
-            @printf(io, "%6d    % 0.10E \n",n, block.block[n])
+            @printf(io, "%6d    % 0.15E \n",n, block.block[n])
         end
     end
 
     function show{label}(io::IO, m::MIME"text/plain",
                                  block::SLHASimpleBlock{label, 2})
-        @printf(io, "BLOCK %s Q= %+0.10E \n", label, block.scale)
+        @printf(io, "BLOCK %s Q= %+0.15E \n", label, block.scale)
         (nr,nc) = size(block.block)
         for c = 1:nc
             for r = 1:nr
-                @printf(io, "%3d %2d    % 0.10E \n",r, c, block.block[r,c])
+                @printf(io, "%3d %2d    % 0.15E \n",r, c, block.block[r,c])
             end
         end
     end
 
     function show{label}(io::IO, m::MIME"text/plain",
                                  block::SLHASimpleBlock{label, 3})
-        @printf(io, "BLOCK %s Q= %+0.10E \n", label, block.scale)
+        @printf(io, "BLOCK %s Q= %+0.15E \n", label, block.scale)
         A = block.block
         @nloops 3 ind A begin
-            @printf(io, "%3d %2d %2d % 0.10E \n", (@ntuple 3 ind)...,
+            @printf(io, "%3d %2d %2d % 0.15E \n", (@ntuple 3 ind)...,
                     (@nref 3 A ind))
         end
     end
@@ -98,9 +125,9 @@ module SLHA
                                    block::SLHASimpleBlock{label, dim})
         quote
             A = block.block
-            @printf(io, "BLOCK %s Q=%+0.10E \n",label, block.scale)
+            @printf(io, "BLOCK %s Q=%+0.15E \n",label, block.scale)
             @nloops $dim ind A begin
-                @printf(io, "%s % 0.10E \n",
+                @printf(io, "%s % 0.15E \n",
                         string(map((n) -> @sprintf(" %2d", n),
                                    (@ntuple $dim ind))...),
                         (@nref $dim A ind))
@@ -112,15 +139,15 @@ module SLHA
                                  block::SLHADescBlock{label})
         println(io, "BLOCK $(label)")
         for (index, param) in block.block
-            @printf(io, "%6d    %s\n", index, param)
+            @printf(io, "%6d    %s \n", index, param)
         end
     end
 
     function show{label}(io::IO, m::MIME"text/plain",
                                  block::SLHAParameterBlock{label})
-        @printf(io, "BLOCK %s Q=%+0.10E \n",label, block.scale)
+        @printf(io, "BLOCK %s Q=%+0.15E \n",label, block.scale)
         for (index, param) in block.block
-            @printf(io, "%6d    %s\n", index, param)
+            @printf(io, "%6d    % 0.15E \n", index, param)
         end
     end
 
@@ -128,20 +155,20 @@ module SLHA
                              block::SLHANoScaleParameterBlock{label})
         println(io, "BLOCK $(label)")
         for (index, param) in block.block
-            @printf(io, "%6d    %s\n", index, param)
+            @printf(io, "%6d    % 0.15E \n", index, param)
         end
     end
 
     function show{label}(io::IO, m::MIME"text/plain",
                                  block::SLHASparseBlock{label})
-        @printf(io, "BLOCK %s Q=%+0.10E \n",label, block.scale)
+        @printf(io, "BLOCK %s Q=%+0.15E \n",label, block.scale)
         rows = rowvals(block.block)
         vals = nonzeros(block.block)
         for col = 1:size(block.block, 2)
             for sparseind in nzrange(block.block, c)
                 row = rows[sparseind]
                 val = vals[sparseind]
-                @printf(io, "%3d %2d    % 0.10E \n", row, col, val)
+                @printf(io, "%3d %2d    % 0.15E \n", row, col, val)
             end
         end
     end
@@ -149,7 +176,13 @@ module SLHA
     function show{label}(io::IO, m::MIME"text/plain",
                              block::SLHASingletonBlock{label})
         println(io, "BLOCK $(label)")
-        @printf(io, "          % 0.10E \n", block.entry)
+        @printf(io, "          % 0.15E \n", block.entry)
+    end
+
+    function show{T<:SLHABlock}(io::IO, m::MIME"text/plain", v::Array{T,1})
+        for x in v
+            show(io, m, x)
+        end
     end
 
 end
