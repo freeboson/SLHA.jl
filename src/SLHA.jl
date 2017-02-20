@@ -185,5 +185,20 @@ module SLHA
         end
     end
 
+    function show{label, dim}(io::IO, m::MIME"text/plain",
+                                         block::SLHAArbitraryBlock{label})
+        if isnull(block.scale)
+            println(io, "BLOCK $(label)")
+        else
+            @printf(io, "BLOCK %s Q=%+0.15E \n",label, block.scale)
+        end
+        for (index, param) in block.block
+            for i in index
+                @printf(" %2d", i)
+            end
+            @printf("    % 0.15E \n", param)
+        end
+    end
+
 end
 
