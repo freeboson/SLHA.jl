@@ -18,6 +18,7 @@ module SLHA
             SLHAMSoftBlock,
             SLHANMixBlock,
             SLHAUMixBlock,
+            SLHAVMixBlock,
             SLHAStopMixBlock,
             SLHASbotMixBlock,
             SLHAStauMixBlock,
