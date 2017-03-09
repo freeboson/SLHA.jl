@@ -78,6 +78,7 @@ module SLHA
     typealias SLHAMSoftBlock        SLHAParameterBlock{:MSOFT}
     typealias SLHANMixBlock         SLHASimpleBlock{:NMIX, 2}
     typealias SLHAUMixBlock         SLHASimpleBlock{:UMIX, 2}
+    typealias SLHAVMixBlock         SLHASimpleBlock{:VMIX, 2}
     typealias SLHAStopMixBlock      SLHASimpleBlock{:STOPMIX, 2}
     typealias SLHASbotMixBlock      SLHASimpleBlock{:SBOTMIX, 2}
     typealias SLHAStauMixBlock      SLHASimpleBlock{:STAUMIX, 2}
