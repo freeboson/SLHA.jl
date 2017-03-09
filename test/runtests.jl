@@ -105,7 +105,8 @@ println("Building SLHA file in string ...");
 
 io = IOBuffer();
 show(io, softsusy_spc);
-slha = String(take!(io));
+#slha = String(take!(io));
+slha = takebuf_string(io);
 
 println("Checking character length ...");
 
