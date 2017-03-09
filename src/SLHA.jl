@@ -167,7 +167,7 @@ module SLHA
         rows = rowvals(block.block)
         vals = nonzeros(block.block)
         for col = 1:size(block.block, 2)
-            for sparseind in nzrange(block.block, c)
+            for sparseind in nzrange(block.block, col)
                 row = rows[sparseind]
                 val = vals[sparseind]
                 @printf(io, "%3d %2d    % 0.15E \n", row, col, val)
