@@ -125,6 +125,7 @@ println("Checking trilinear offdiagonals ...");
 
 ad=softsusy_spc[20].block;
 
-@test iszero(ad[2,3])
+#@test iszero(ad[2,3])
+@test ad[2,3] == 0.0
 
 
