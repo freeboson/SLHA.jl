@@ -1,8 +1,8 @@
 using SLHA
 using Base.Test
 
-Pkg.add("SHA") # not sure if this is the wrong way
-using SHA
+println("Constructing SLHA structure based on ",
+        "http://skands.physics.monash.edu/slha/softsusy.spc ...");
 
 softsusy_spc = [SLHASpInfoBlock(Dict(1=>"SOFTSUSY",2=>"1.9.1")),
                 SLHAModSelBlock(Dict(1=>"1")),
@@ -54,14 +54,10 @@ softsusy_spc = [SLHASpInfoBlock(Dict(1=>"SOFTSUSY",2=>"1.9.1")),
                                  [2.80956141e-01 9.59720609e-01;
                                   9.59720609e-01 -2.80956141e-01]),
                 SLHANMixBlock(4.64231969e+02,
-                              [9.86066377e-01 -5.46292061e-02
-                               1.47649927e-01 -5.37424305e-02;
-                               1.02062420e-01 9.42721210e-01
-                               -2.74985600e-01 1.58880154e-01;
-                               -6.04575099e-02 8.97030908e-02
-                               6.95501068e-01 7.10335491e-01;
-                               -1.16624405e-01 3.16616055e-01
-                               6.47194471e-01 -6.83587843e-01]),
+                              [9.86066377e-01 -5.46292061e-02 1.47649927e-01 -5.37424305e-02;
+                               1.02062420e-01 9.42721210e-01 -2.74985600e-01 1.58880154e-01;
+                               -6.04575099e-02 8.97030908e-02 6.95501068e-01 7.10335491e-01;
+                               -1.16624405e-01 3.16616055e-01 6.47194471e-01 -6.83587843e-01]),
                 SLHAUMixBlock(4.64231969e+02,
                               [9.15531658e-01 -4.02245924e-01;
                                4.02245924e-01 9.15531658e-01]),
@@ -105,9 +101,29 @@ softsusy_spc = [SLHASpInfoBlock(Dict(1=>"SOFTSUSY",2=>"1.9.1")),
                 SLHAAEBlock(4.64231969e+02,
                             sparse([3], [3], [-2.56146632e+02]))];
 
+println("Building SLHA file in string ...");
+
 io = IOBuffer();
 show(io, softsusy_spc);
 slha = String(take!(io));
 
-@test bytes2hex(sha256(slha)) == "e20ab5ec39739f068426c711dc5e2bb861b5597107469996c6e51db09afccb96"
+println("Checking character length ...");
+
+@test length(slha) == 2378
+
+
+println("Checking neutralino mixing unitarity ...");
+
+nmix=softsusy_spc[10].block;
+@test 1-sum((nmix .* nmix)[1,:]) < 1e-7
+@test 1-sum((nmix .* nmix)[2,:]) < 1e-7
+@test 1-sum((nmix .* nmix)[3,:]) < 1e-7
+@test 1-sum((nmix .* nmix)[4,:]) < 1e-7
+
+println("Checking trilinear offdiagonals ...");
+
+ad=softsusy_spc[20].block;
+
+@test iszero(ad[2,3])
+
 
