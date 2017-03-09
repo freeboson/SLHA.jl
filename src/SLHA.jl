@@ -127,7 +127,7 @@ module SLHA
                                    block::SLHASimpleBlock{label, dim})
         quote
             A = block.block
-            @printf(io, "BLOCK %s Q=%+0.15E \n",label, block.scale)
+            @printf(io, "BLOCK %s Q= %+0.15E \n",label, block.scale)
             @nloops $dim ind A begin
                 @printf(io, "%s % 0.15E \n",
                         string(map((n) -> @sprintf(" %2d", n),
@@ -147,7 +147,7 @@ module SLHA
 
     function show{label}(io::IO, m::MIME"text/plain",
                                  block::SLHAParameterBlock{label})
-        @printf(io, "BLOCK %s Q=%+0.15E \n",label, block.scale)
+        @printf(io, "BLOCK %s Q= %+0.15E \n",label, block.scale)
         for (index, param) in block.block
             @printf(io, "%6d    % 0.15E \n", index, param)
         end
@@ -163,7 +163,7 @@ module SLHA
 
     function show{label}(io::IO, m::MIME"text/plain",
                                  block::SLHASparseBlock{label})
-        @printf(io, "BLOCK %s Q=%+0.15E \n",label, block.scale)
+        @printf(io, "BLOCK %s Q= %+0.15E \n",label, block.scale)
         rows = rowvals(block.block)
         vals = nonzeros(block.block)
         for col = 1:size(block.block, 2)
@@ -192,7 +192,7 @@ module SLHA
         if isnull(block.scale)
             println(io, "BLOCK $(label)")
         else
-            @printf(io, "BLOCK %s Q=%+0.15E \n",label, block.scale)
+            @printf(io, "BLOCK %s Q= %+0.15E \n",label, block.scale)
         end
         for (index, param) in block.block
             for i in index
