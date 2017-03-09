@@ -1,6 +1,9 @@
 using SLHA
 using Base.Test
 
+Pkg.add("SHA") # not sure if this is the wrong way
+using SHA
+
 softsusy_spc = [SLHASpInfoBlock(Dict(1=>"SOFTSUSY",2=>"1.9.1")),
                 SLHAModSelBlock(Dict(1=>"1")),
                 SLHASMInputsBlock(Dict(1=>1.27934000e+02, 2=>1.16637000e-05,
@@ -100,6 +103,11 @@ softsusy_spc = [SLHASpInfoBlock(Dict(1=>"SOFTSUSY",2=>"1.9.1")),
                 SLHAADBlock(4.64231969e+02,
                             sparse([3], [3], [-7.97104366e+02])),
                 SLHAAEBlock(4.64231969e+02,
-                            sparse([3], [3], [-2.56146632e+02]))]
+                            sparse([3], [3], [-2.56146632e+02]))];
 
-@test 1 == 2
+io = IOBuffer();
+show(io, softsusy_spc);
+slha = String(take!(io));
+
+@test bytes2hex(sha256(slha)) == "e20ab5ec39739f068426c711dc5e2bb861b5597107469996c6e51db09afccb96"
+
