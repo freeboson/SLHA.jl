@@ -105,8 +105,7 @@ println("Building SLHA file in string ...");
 
 io = IOBuffer();
 show(io, softsusy_spc);
-#slha = String(take!(io));
-slha = takebuf_string(io);
+slha = String(take!(io));
 
 # not sure why but this is not portable
 #println("Checking character length ...");
@@ -125,7 +124,6 @@ println("Checking trilinear offdiagonals ...");
 
 ad=softsusy_spc[20].block;
 
-#@test iszero(ad[2,3])
-@test ad[2,3] == 0.0
+@test iszero(ad[2,3])
 
 
