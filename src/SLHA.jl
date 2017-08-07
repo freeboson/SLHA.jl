@@ -34,6 +34,7 @@ export  SLHABlock,
 
 include("types.jl")
 include("print.jl")
+include("parse.jl")
 
 end
 
