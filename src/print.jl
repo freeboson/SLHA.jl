@@ -5,10 +5,10 @@ function show{label}(io::IO, m::MIME"text/plain",
     if isnull(block.scale)
         println(io, "BLOCK $(label)")
     else
-        @printf(io, "BLOCK %s Q= %+0.15E \n",label, block.scale)
+        @printf(io, "BLOCK %s Q= %+0.15E \n",label, block.scale.value)
     end
     for n = 1:length(block.block)
-        @printf(io, "%6d    % 0.15E \n",n, block.block[n])
+        @printf(io, "%8d    % 0.15E \n",n, block.block[n])
     end
 end
 
@@ -17,12 +17,12 @@ function show{label}(io::IO, m::MIME"text/plain",
     if isnull(block.scale)
         println(io, "BLOCK $(label)")
     else
-        @printf(io, "BLOCK %s Q= %+0.15E \n",label, block.scale)
+        @printf(io, "BLOCK %s Q= %+0.15E \n",label, block.scale.value)
     end
     (nr,nc) = size(block.block)
     for c = 1:nc
         for r = 1:nr
-            @printf(io, "%3d %2d    % 0.15E \n",r, c, block.block[r,c])
+            @printf(io, " %3d %3d    % 0.15E \n",r, c, block.block[r,c])
         end
     end
 end
@@ -32,11 +32,11 @@ function show{label}(io::IO, m::MIME"text/plain",
     if isnull(block.scale)
         println(io, "BLOCK $(label)")
     else
-        @printf(io, "BLOCK %s Q= %+0.15E \n",label, block.scale)
+        @printf(io, "BLOCK %s Q= %+0.15E \n",label, block.scale.value)
     end
     A = block.block
     @nloops 3 ind A begin
-        @printf(io, "%3d %2d %2d % 0.15E \n", (@ntuple 3 ind)...,
+        @printf(io, " %3d %3d %3d % 0.15E \n", (@ntuple 3 ind)...,
                 (@nref 3 A ind))
     end
 end
@@ -49,7 +49,7 @@ end
         if isnull(block.scale)
             println(io, "BLOCK $(label)")
         else
-            @printf(io, "BLOCK %s Q= %+0.15E \n",label, block.scale)
+            @printf(io, "BLOCK %s Q= %+0.15E \n",label, block.scale.value)
         end
         @nloops $dim ind A begin
             @printf(io, "%s % 0.15E \n",
@@ -63,7 +63,7 @@ end
 function show{label}(io::IO, m::MIME"text/plain", block::SLHADescBlock{label})
     println(io, "BLOCK $(label)")
     for (index, param) in block.block
-        @printf(io, "%6d    %s \n", index, param)
+        @printf(io, "%8d    %s \n", index, param)
     end
 end
 
@@ -72,10 +72,10 @@ function show{label}(io::IO, m::MIME"text/plain",
     if isnull(block.scale)
         println(io, "BLOCK $(label)")
     else
-        @printf(io, "BLOCK %s Q= %+0.15E \n",label, block.scale)
+        @printf(io, "BLOCK %s Q= %+0.15E \n",label, block.scale.value)
     end
     for (index, param) in block.block
-        @printf(io, "%6d    % 0.15E \n", index, param)
+        @printf(io, "%8d    % 0.15E \n", index, param)
     end
 end
 
@@ -83,7 +83,7 @@ function show{label}(io::IO, m::MIME"text/plain", block::SLHASparseBlock{label})
     if isnull(block.scale)
         println(io, "BLOCK $(label)")
     else
-        @printf(io, "BLOCK %s Q= %+0.15E \n",label, block.scale)
+        @printf(io, "BLOCK %s Q= %+0.15E \n",label, block.scale.value)
     end
     rows = rowvals(block.block)
     vals = nonzeros(block.block)
@@ -91,7 +91,7 @@ function show{label}(io::IO, m::MIME"text/plain", block::SLHASparseBlock{label})
         for sparseind in nzrange(block.block, col)
             row = rows[sparseind]
             val = vals[sparseind]
-            @printf(io, "%3d %2d    % 0.15E \n", row, col, val)
+            @printf(io, " %3d %3d    % 0.15E \n", row, col, val)
         end
     end
 end
@@ -113,11 +113,11 @@ function show{label}(io::IO, m::MIME"text/plain",
     if isnull(block.scale)
         println(io, "BLOCK $(label)")
     else
-        @printf(io, "BLOCK %s Q= %+0.15E \n",label, block.scale)
+        @printf(io, "BLOCK %s Q= %+0.15E \n",label, block.scale.value)
     end
     for (index, param) in block.block
         for i in index
-            @printf(" %2d", i)
+            @printf(" %3d", i)
         end
         @printf("    % 0.15E \n", param)
     end

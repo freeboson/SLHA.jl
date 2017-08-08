@@ -4,11 +4,41 @@ abstract type SLHANumericalBlock <: SLHABlock end
 abstract type SLHAArrayBlock <: SLHANumericalBlock end
 abstract type SLHAScalarBlock <: SLHANumericalBlock end
 
+const IndVals = Vector{Tuple{Vector{Int64}, String}}
+
 struct SLHASimpleBlock{label, dim} <: SLHAArrayBlock
     scale::Nullable{Float64}
     block::Array{Float64,dim}
+
+    SLHASimpleBlock{label, dim}(q::Nullable{Float64}, block::Array) where
+        {label, dim} = new(q,block)
+
+    SLHASimpleBlock{label, dim}(q::Float64, block::Array) where
+        {label, dim} = new(Nullable{Float64}(q), block)
+
+    function SLHASimpleBlock{label, dim}(
+            scale::Nullable{Float64},
+            indvals::Vector{Tuple{Vector{Int64}, String}}
+        ) where {label, dim}
+        lengths = zeros(Int64, dim)
+        for iv in indvals
+            for k = 1:length(iv[1])
+                if iv[1][k] > lengths[k]
+                    lengths[k] = iv[1][k]
+                end
+            end
+        end
+        block = zeros(Float64, lengths...)
+        for iv in indvals
+            ind = iv[1]
+            val = parse(Float64, iv[2])
+            block[ind...] = val
+        end
+        new(scale, block)
+    end
 end
-SLHASimpleBlock(l::Symbol, q, x::Array) = SLHASimpleBlock{l, ndims(x)}(q, x)
+SLHASimpleBlock(l::Symbol, q::Nullable{Float64}, x::Array) =
+        SLHASimpleBlock{l, ndims(x)}(q, x)
 
 struct SLHADescBlock{label} <: SLHABlock
     block::Dict{Int64, String}
@@ -59,25 +89,3 @@ const SLHAYDBlock               = SLHASparseBlock{:YD}
 const SLHAYEBlock               = SLHASparseBlock{:YE}
 
 const SLHANMSSMRunBlock         = SLHAParameterBlock{:NMSSMRUN}
-
-function SLHASimpleBlock{label, dim}(scale::Nullable{Float64},
-                                     indvals::Vector{Tuple{Vector{Int64},
-                                                           String}})
-    lengths = zeros(Int64, dim)
-    for iv in indvals
-        for k = 1:length(iv[1])
-            if iv[1][k] > lengths[k]
-                lengths[k] = iv[1][k]
-            end
-        end
-    end
-    block = zeros(Float64, lengths...)
-    for iv in indvals
-        ind = iv[1]
-        val = parse(Float64, iv[2])
-        block[ind...] = val
-    end
-    SLHASimpleBlock{label, dim}(scale, block)
-end
-
-
