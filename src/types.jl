@@ -61,13 +61,13 @@ const SLHAYEBlock               = SLHASparseBlock{:YE}
 const SLHANMSSMRunBlock         = SLHAParameterBlock{:NMSSMRUN}
 
 function SLHASimpleBlock{label, dim}(scale::Nullable{Float64},
-                                     indvals::Tuple{Vector{Int64},
-                                                    Vector{<:AbstractString}})
+                                     indvals::Vector{Tuple{Vector{Int64},
+                                                           String}})
     lengths = zeros(Int64, dim)
     for iv in indvals
-        for (i,m) in zip(iv[1], lengths)
-            if i > m
-                m = i
+        for k = 1:length(iv[1])
+            if iv[1][k] > lengths[k]
+                lengths[k] = iv[1][k]
             end
         end
     end

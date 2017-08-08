@@ -32,9 +32,9 @@ function readslha(slha::AbstractString)
     clean = replace(slha, strip_comments, "")
     blocks = eachmatch(block_match, clean)
     map(blocks) do block
-        block_type = slha_block_type(uppercase(block.capture[1]))
-        scale = Nullable{Float64}(block.capture[2])
-        indvals = get_indices_values(block.capture[3])
+        block_type = slha_block_type(uppercase(block.captures[1]))
+        scale = Nullable{Float64}(block.captures[2])
+        indvals = get_indices_values(block.captures[3])
 
         block_type(scale, indvals)
     end
@@ -87,8 +87,8 @@ function slha_block_type(name::AbstractString)
         return SLHAYEBlock
     elseif name == "NMSSMRUN"
         return SLHANMSSMRunBlock
-    else
-        return SLHAArbitraryBlock{symbol(name)}
+    end
+    SLHAArbitraryBlock{symbol(name)}
 end
 
 
