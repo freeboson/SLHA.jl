@@ -17,13 +17,78 @@ block_match = r"
     (?=Block|Decay|\Z)              # until you hit another block, decay, or EOF
 "isx
 
+function get_indices_values(block_data::AbstractString)
+    map(map(split,split(strip(block_data), "\n"))) do nums
+       if length(nums) > 1
+         inds = map(n -> parse(Int64, n), nums[1:end-1])
+       else
+         inds = Vector{Int64}()
+       end
+       (inds, nums[end])
+   end
+end
+
 function readslha(slha::AbstractString)
     clean = replace(slha, strip_comments, "")
     blocks = eachmatch(block_match, clean)
-    for block in blocks
-        name = uppercase(block.capture[1])
-        scale_cap = block.capture[2]
-        data = block.capture[3]
+    map(blocks) do block
+        block_type = slha_block_type(uppercase(block.capture[1]))
+        scale = Nullable{Float64}(block.capture[2])
+        indvals = get_indices_values(block.capture[3])
+
+        block_type(scale, indvals)
     end
 end
+
+function slha_block_type(name::AbstractString)
+    if name == "SPINFO"
+        return SLHASpInfoBlock
+    elseif name == "MODSEL"
+        return SLHAModSelBlock
+    elseif name == "SMINPUTS"
+        return SLHASMInputsBlock
+    elseif name == "MINPAR"
+        return SLHAMinParBlock
+    elseif name == "EXTPAR"
+        return SLHAExtParBlock
+    elseif name == "MASS"
+        return SLHAMassBlock
+    elseif name == "MSOFT"
+        return SLHAMSoftBlock
+    elseif name == "NMIX"
+        return SLHANMixBlock
+    elseif name == "UMIX"
+        return SLHAUMixBlock
+    elseif name == "VMIX"
+        return SLHAVMixBlock
+    elseif name == "STOPMIX"
+        return SLHAStopMixBlock
+    elseif name == "SBOTMIX"
+        return SLHASbotMixBlock
+    elseif name == "STAUMIX"
+        return SLHAStauMixBlock
+    elseif name == "ALPHA"
+        return SLHAAlphaBlock
+    elseif name == "HMIX"
+        return SLHAHMixBlock
+    elseif name == "GAUGE"
+        return SLHAGaugeBlock
+    elseif name == "AU"
+        return SLHAAUBlock
+    elseif name == "AD"
+        return SLHAADBlock
+    elseif name == "AE"
+        return SLHAAEBlock
+    elseif name == "YU"
+        return SLHAYUBlock
+    elseif name == "YD"
+        return SLHAYDBlock
+    elseif name == "YE"
+        return SLHAYEBlock
+    elseif name == "NMSSMRUN"
+        return SLHANMSSMRunBlock
+    else
+        return SLHAArbitraryBlock{symbol(name)}
+end
+
 
