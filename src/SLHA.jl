@@ -29,7 +29,8 @@ export  SLHABlock,
         SLHAAEBlock,
         SLHAYUBlock,
         SLHAYDBlock,
-        SLHAYEBlock
+        SLHAYEBlock,
+        readslha
 
 include("types.jl")
 include("print.jl")
