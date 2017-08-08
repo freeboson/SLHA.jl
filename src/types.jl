@@ -48,22 +48,29 @@ struct SLHAParameterBlock{label} <: SLHABlock
     scale::Nullable{Float64}
     block::Dict{Int64, Float64}
 end
+SLHAParameterBlock{l}(q::Float64, block::Dict{Int64, Float64}) where l =
+    SLHAParameterBlock{l}(Nullable{Float64}(q), block)
 
 struct SLHASparseBlock{label} <: SLHAArrayBlock
     scale::Nullable{Float64}
     block::SparseMatrixCSC{Float64, Int64}
 end
+SLHASparseBlock{l}(q::Float64, d::SparseMatrixCSC{Float64, Int64}) where l =
+    SLHASparseBlock{l}(Nullable{Float64}(q), d)
 
 # I really hate that this exists
 struct SLHASingletonBlock{label} <: SLHAScalarBlock
     scale::Nullable{Float64}
     entry::Float64
 end
+SLHASingletonBlock{l}(q::Float64, v::Float64) where l =SLHASingletonBlock{l}(q,d)
 
 struct SLHAArbitraryBlock{label} <: SLHABlock
     scale::Nullable{Float64}
-    block::Dict{Array{Int64,1},String}
+    block::Dict{Vector{Int64},String}
 end
+SLHAArbitraryBlock{l}(q::Float64, d::Dict{Vector{Int64}, String}) where l =
+    SLHAArbitraryBlock{l}(Nullable{Float64}(q), d)
 
 const SLHASpInfoBlock           = SLHADescBlock{:SPINFO}
 const SLHAModSelBlock           = SLHADescBlock{:MODSEL}
