@@ -7,6 +7,8 @@
                            |__/
 ```
 [![Build Status](https://travis-ci.org/freeboson/SLHA.jl.svg?branch=master)](https://travis-ci.org/freeboson/SLHA.jl)
+[![Coverage Status](https://coveralls.io/repos/freeboson/SLHA.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/freeboson/SLHA.jl?branch=master)
+[![codecov.io](http://codecov.io/github/freeboson/SLHA.jl/coverage.svg?branch=master)](http://codecov.io/github/freeboson/SLHA.jl?branch=master)
 
 This is a package written in [Julia](https://julialang.org) to parse, serialize,
 and perform calculations with the Supersymmetry Les Houches Accord (SLHA) file
