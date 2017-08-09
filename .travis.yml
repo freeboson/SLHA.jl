@@ -4,8 +4,11 @@ os:
   - linux
   - osx
 julia:
-  - release
+  - 0.6
   - nightly
+matrix:
+    allow_failures:
+        - julia: nightly
 notifications:
   email: false
   irc:
@@ -15,12 +18,8 @@ notifications:
       - "%{repository}/%{branch} #%{build_number} (%{commit}) : %{message}"
     on_success: change
     on_failure: always
-# uncomment the following lines to override the default test script
-#script:
-#  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-#  - julia -e 'Pkg.clone(pwd()); Pkg.build("SLHA"); Pkg.test("SLHA"; coverage=true)'
+git:
+    depth: 99999999
 after_success:
-  # push coverage results to Coveralls
   - julia -e 'cd(Pkg.dir("SLHA")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
-  # push coverage results to Codecov
   - julia -e 'cd(Pkg.dir("SLHA")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
